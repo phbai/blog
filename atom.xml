@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.phbai.com/"/>
-  <updated>2017-01-07T14:00:10.000Z</updated>
+  <updated>2017-03-06T15:29:09.000Z</updated>
   <id>http://www.phbai.com/</id>
   
   <author>
@@ -14,6 +14,57 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Ubuntu开启HTTPS和HTTP2</title>
+    <link href="http://www.phbai.com/2017/03/06/Ubuntu%E5%BC%80%E5%90%AFHTTPS%E5%92%8CHTTP2/"/>
+    <id>http://www.phbai.com/2017/03/06/Ubuntu开启HTTPS和HTTP2/</id>
+    <published>2017-03-06T14:47:52.000Z</published>
+    <updated>2017-03-06T15:29:09.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文主要记录一下从无到开启HTTPS和HTTP2的过程。</p>
+<a id="more"></a>
+<h3 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h3><ul>
+<li>Ubuntu 16.04 LTS</li>
+<li>Nging 1.10.0</li>
+<li>OpenSSL 1.0.2g</li>
+</ul>
+<h3 id="一、安装最新版本-Nginx"><a href="#一、安装最新版本-Nginx" class="headerlink" title="一、安装最新版本 Nginx"></a>一、安装最新版本 Nginx</h3><p><strong>首先更新下 apt-get</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get update</div></pre></td></tr></table></figure>
+<p><strong>安装 nginx</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install nginx</div></pre></td></tr></table></figure>
+<p>安装结束后，通过如下命令查看 Nginx 版本。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo nginx -v</div></pre></td></tr></table></figure>
+<p>应该返回如下结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Ouput of sudo nginx -v</div><div class="line">nginx version: nginx/1.10.0 (Ubuntu)</div></pre></td></tr></table></figure>
+<h3 id="二、更改-Nginx-监听端口并开启-HTTP2"><a href="#二、更改-Nginx-监听端口并开启-HTTP2" class="headerlink" title="二、更改 Nginx 监听端口并开启 HTTP2"></a>二、更改 Nginx 监听端口并开启 HTTP2</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo vim /etc/nginx/sites-available/default</div></pre></td></tr></table></figure>
+<p>找到下列几行。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">listen 80 default_server;</div><div class="line">listen [::]:80 default_server;</div></pre></td></tr></table></figure></p>
+<p>更改为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">listen 443 ssl http2 default_server;</div><div class="line">listen [::]:443 ssl http2 default_server;</div></pre></td></tr></table></figure></p>
+<h3 id="三、更改服务器名"><a href="#三、更改服务器名" class="headerlink" title="三、更改服务器名"></a>三、更改服务器名</h3><p>还是在default文件中，更改server_name<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">server_name example.com;</div></pre></td></tr></table></figure></p>
+<p>到此这一步，可以通过如下命令测试Nginx服务配置是否正确。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo nginx -t</div></pre></td></tr></table></figure></p>
+<p>如果你上述步骤都没有问题，应该得到如下的返回结果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</div><div class="line">nginx: configuration file /etc/nginx/nginx.conf test is successful</div></pre></td></tr></table></figure></p>
+<h3 id="四、添加SSL证书"><a href="#四、添加SSL证书" class="headerlink" title="四、添加SSL证书"></a>四、添加SSL证书</h3><p>因为HTTP2建议开启HTTPS，所以我们需要一个免费的HTTPS证书，这里推荐letsencrypt。<br>可通过如下命令安装 letsencrypt。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install letsencrypt</div></pre></td></tr></table></figure></p>
+<p>安装完成后，执行如下指令生成SSL证书。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">letsencrypt certonly</div></pre></td></tr></table></figure></p>
+<p>生成过程第一步是让你填写邮箱地址。<br>第二步是让你填写域名地址。填写格式为 example.com<br>证书生成完毕后，会得到如下结果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">Output:</div><div class="line">IMPORTANT NOTES:</div><div class="line"> - If you lose your account credentials, you can recover through</div><div class="line">   e-mails sent to sammy@digitalocean.com</div><div class="line"> - Congratulations! Your certificate and chain have been saved at</div><div class="line">   /etc/letsencrypt/live/example.com/fullchain.pem. Your</div><div class="line">   cert will expire on 2016-03-15. To obtain a new version of the</div><div class="line">   certificate in the future, simply run Let&apos;s Encrypt again.</div><div class="line"> - Your account credentials have been saved in your Let&apos;s Encrypt</div><div class="line">   configuration directory at /etc/letsencrypt. You should make a</div><div class="line">   secure backup of this folder now. This configuration directory will</div><div class="line">   also contain certificates and private keys obtained by Let&apos;s</div><div class="line">   Encrypt so making regular backups of this folder is ideal.</div><div class="line"> - If like Let&apos;s Encrypt, please consider supporting our work by:</div><div class="line"></div><div class="line">   Donating to ISRG / Let&apos;s Encrypt:   https://letsencrypt.org/donate</div><div class="line">   Donating to EFF:                    https://eff.org/donate-le</div></pre></td></tr></table></figure></p>
+<p>证书保存路径为 /etc/letsencrypt/example.com/live/</p>
+<p>再次编辑default<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo vim /etc/nginx/sites-available/default</div></pre></td></tr></table></figure></p>
+<p>添加如下SSL配置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;</div><div class="line">ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;</div></pre></td></tr></table></figure></p>
+<h3 id="五、为SSL连接提高加密安全系数"><a href="#五、为SSL连接提高加密安全系数" class="headerlink" title="五、为SSL连接提高加密安全系数"></a>五、为SSL连接提高加密安全系数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048</div></pre></td></tr></table></figure>
+<p>然后在 /etc/nginx/sites-available/default 加入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssl_dhparam  /etc/nginx/ssl/dhparam.pem;</div></pre></td></tr></table></figure></p>
+<h3 id="六、重定向HTTP流量到HTTPS"><a href="#六、重定向HTTP流量到HTTPS" class="headerlink" title="六、重定向HTTP流量到HTTPS"></a>六、重定向HTTP流量到HTTPS</h3><p>在 default 下重开一个 server<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">    listen 443 ssl http2 default_server;</div><div class="line">    listen [::]:443 ssl http2 default_server;</div><div class="line">    // other settings</div><div class="line">&#125;</div><div class="line">server &#123;</div><div class="line">       listen         80;</div><div class="line">       listen    [::]:80;</div><div class="line">       server_name    example.com;</div><div class="line">       return         301 https://$server_name$request_uri;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="七、重启-Nginx-服务"><a href="#七、重启-Nginx-服务" class="headerlink" title="七、重启 Nginx 服务"></a>七、重启 Nginx 服务</h3><p>至此，Nginx服务都配置完成了。你的配置应该如下所示。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">        listen 443 ssl http2 default_server;</div><div class="line">        listen [::]:443 ssl http2 default_server;</div><div class="line"></div><div class="line">        root /var/www/html;</div><div class="line"></div><div class="line">        index index.html index.htm index.nginx-debian.html;</div><div class="line"></div><div class="line">        server_name example.com;</div><div class="line"></div><div class="line">        location / &#123;</div><div class="line">                try_files $uri $uri/ =404;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        ssl_certificate /etc/nginx/ssl/example.com.crt;</div><div class="line">        ssl_certificate_key /etc/nginx/ssl/example.com.key;</div><div class="line">        ssl_dhparam /etc/nginx/ssl/dhparam.pem;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">server &#123;</div><div class="line">       listen         80;</div><div class="line">       listen    [::]:80;</div><div class="line">       server_name    example.com;</div><div class="line">       return         301 https://$server_name$request_uri;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>为了保存至此的修改，重启Nginx服务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo service nginx restart</div></pre></td></tr></table></figure></p>
+<h3 id="八、大功告成"><a href="#八、大功告成" class="headerlink" title="八、大功告成"></a>八、大功告成</h3><p>你的服务器已经开启了HTTP2和HTTPS，那么怎么检查网站是否开启HTTP2协议呢。<br>打开Chrome开发工具，右键表头开启协议显示如下图所示。<br><img src="https://assets.digitalocean.com/articles/nginx_http2/http2_check.png" alt="开启协议显示"><br>现在我们看到，所有的请求都是HTTP2请求。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文主要记录一下从无到开启HTTPS和HTTP2的过程。&lt;/p&gt;
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>博客所用技术</title>
@@ -77,7 +128,7 @@
     <link href="http://www.phbai.com/2016/05/07/%E7%BB%99%E4%BD%A0%E7%9A%84%E7%BD%91%E7%AB%99%E5%8A%A0%E4%B8%8AHttps/"/>
     <id>http://www.phbai.com/2016/05/07/给你的网站加上Https/</id>
     <published>2016-05-07T08:44:48.000Z</published>
-    <updated>2017-01-07T14:09:30.000Z</updated>
+    <updated>2017-01-07T14:09:29.000Z</updated>
     
     <content type="html"><![CDATA[<p>无论是手机还是PC上网的时候，如果网站采用的是普通的Http网站，可能会被运营商劫持，并在相应页面加上广告。</p>
 <a id="more"></a>
@@ -127,7 +178,7 @@
     <link href="http://www.phbai.com/2016/04/27/Django%E9%83%A8%E7%BD%B2nginx/"/>
     <id>http://www.phbai.com/2016/04/27/Django部署nginx/</id>
     <published>2016-04-27T14:52:19.000Z</published>
-    <updated>2017-01-07T13:28:32.000Z</updated>
+    <updated>2017-01-07T13:28:31.000Z</updated>
     
     <content type="html"><![CDATA[<p>Django自带的 python manage.py runserver只提供测试用，到了实际生产环境中，需要使用nginx要做请求转发。</p>
 <a id="more"></a>
