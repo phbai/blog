@@ -77,7 +77,7 @@
     <link href="http://www.phbai.com/2016/05/07/%E7%BB%99%E4%BD%A0%E7%9A%84%E7%BD%91%E7%AB%99%E5%8A%A0%E4%B8%8AHttps/"/>
     <id>http://www.phbai.com/2016/05/07/给你的网站加上Https/</id>
     <published>2016-05-07T08:44:48.000Z</published>
-    <updated>2017-01-07T14:09:29.000Z</updated>
+    <updated>2017-01-07T14:09:30.000Z</updated>
     
     <content type="html"><![CDATA[<p>无论是手机还是PC上网的时候，如果网站采用的是普通的Http网站，可能会被运营商劫持，并在相应页面加上广告。</p>
 <a id="more"></a>
@@ -127,7 +127,7 @@
     <link href="http://www.phbai.com/2016/04/27/Django%E9%83%A8%E7%BD%B2nginx/"/>
     <id>http://www.phbai.com/2016/04/27/Django部署nginx/</id>
     <published>2016-04-27T14:52:19.000Z</published>
-    <updated>2017-01-07T13:28:31.000Z</updated>
+    <updated>2017-01-07T13:28:32.000Z</updated>
     
     <content type="html"><![CDATA[<p>Django自带的 python manage.py runserver只提供测试用，到了实际生产环境中，需要使用nginx要做请求转发。</p>
 <a id="more"></a>
@@ -160,9 +160,9 @@
     </summary>
     
     
-      <category term="nginx" scheme="http://www.phbai.com/tags/nginx/"/>
-    
       <category term="django" scheme="http://www.phbai.com/tags/django/"/>
+    
+      <category term="nginx" scheme="http://www.phbai.com/tags/nginx/"/>
     
       <category term="python" scheme="http://www.phbai.com/tags/python/"/>
     
